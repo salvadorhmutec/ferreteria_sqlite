@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 
@@ -17,6 +19,9 @@ public class MainActivity extends Activity {
     private EditText et_nombre;
     private EditText et_numero;
     private EditText et_ciudad;
+    private ListView lv_clientes;
+    private ArrayAdapter adapter;
+
 
     @Override
 
@@ -27,6 +32,10 @@ public class MainActivity extends Activity {
         et_nombre = findViewById(R.id.et_nombre);
         et_numero = findViewById(R.id.et_numero);
         et_ciudad = findViewById(R.id.et_ciudad);
+        lv_clientes = findViewById(R.id.lv_clientes);
+        adapter = new ArrayAdapter(this, R.layout.cliente_item);
+        lv_clientes.setAdapter(adapter);
+
         listaUsuarios();
     }
 
@@ -139,6 +148,7 @@ public class MainActivity extends Activity {
 
     private void listaUsuarios() {
         try {
+            adapter.clear();
             AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this,
                     "ferreteria_acme", null, 1);
             SQLiteDatabase bd = admin.getWritableDatabase();
@@ -151,8 +161,9 @@ public class MainActivity extends Activity {
                 String nombre = fila.getString(1);
                 String ciudad = fila.getString(2);
                 String numero =fila.getString(3);
-                String registro = id_cliente +  " " +nombre + " " + ciudad + " " + numero;
+                String registro = id_cliente +  ":" +nombre ;
                 Log.i("Registros ", registro);
+                adapter.add(registro);
             } while (fila.moveToNext());
             //bd.close();
         } catch (Exception e) {
